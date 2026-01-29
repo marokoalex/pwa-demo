@@ -23,11 +23,10 @@
       navigator.serviceWorker.register("sw.js");
     }
 
-    const socket = new WebSocket('wss://localhost:5618');
+    const socket = new WebSocket('ws://localhost:5618');
   
     socket.onopen = () => {
       console.log('WebSocket connected');
-      socket.send('hi there');   // 👈 send immediately after connect
     };
   
     socket.onmessage = (event) => {
@@ -41,8 +40,21 @@
     socket.onclose = () => {
       console.log('WebSocket closed');
     };
+      
+    // 2️⃣ Attach event listener to Fluent Button
+    const fluentButton = document.querySelector('fluent-button');
+  
+    fluentButton.addEventListener('click', () => {
+      if (socket.readyState === WebSocket.OPEN) {
+        socket.send('hi there');
+        console.log('Sent: hi there');
+      } else {
+        console.warn('WebSocket not connected yet');
+      }
+  });
     
   </script>
 </body>
 
 </html>
+
