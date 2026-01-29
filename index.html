@@ -14,49 +14,73 @@
 
   <fluent-card style="padding: 20px; width: 300px;">
       <h2>Hello World</h2>
-      <fluent-button appearance="accent">Click Me</fluent-button>
+      <fluent-text-field id="ipInput" placeholder="Enter IP" value="127.0.0.1"></fluent-text-field>
+      <fluent-text-field id="portInput" placeholder="Enter Port" value="5618"></fluent-text-field>
+      <fluent-button appearance="accent" id="connectBtn">Connect</fluent-button>
       <fluent-checkbox>Accept Terms</fluent-checkbox>
   </fluent-card>
+
+  <!-- Log output -->
+  <div id="log"></div>
 
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("sw.js");
     }
 
-    const socket = new WebSocket('ws://127.0.0.1:5618');
-  
+    let socket = null;
+    const logDiv = document.getElementById('log');
+
+    function log(message) {
+      logDiv.textContent += message + '\n';
+      logDiv.scrollTop = logDiv.scrollHeight;
+    }
+    
+    document.getElementById('connectBtn').addEventListener('click', () => {
+    const ip = document.getElementById('ipInput').value.trim();
+    const port = document.getElementById('portInput').value.trim();
+
+    if (!ip || !port) {
+      log('IP or port cannot be empty');
+      return;
+    }
+
+    const wsUrl = `ws://${ip}:${port}`;
+    log(`Connecting to ${wsUrl} ...`);
+
+    // Close existing connection if any
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      socket.close();
+      log('Closed previous connection');
+    }
+
+    socket = new WebSocket(wsUrl);
+
     socket.onopen = () => {
-      console.log('WebSocket connected');
+      log('WebSocket connected');
+      // Example: send initial message
+      socket.send('hi there');
+      log('Sent: hi there');
     };
-  
+
     socket.onmessage = (event) => {
-      console.log('Message from server:', event.data);
+      log(`Message from server: ${event.data}`);
     };
-  
+
     socket.onerror = (error) => {
-      console.error('WebSocket error:', error);
+      log(`WebSocket error: ${error}`);
     };
-  
+
     socket.onclose = () => {
-      console.log('WebSocket closed');
+      log('WebSocket closed');
     };
-      
-    // 2️⃣ Attach event listener to Fluent Button
-    const fluentButton = document.querySelector('fluent-button');
-  
-    fluentButton.addEventListener('click', () => {
-      if (socket.readyState === WebSocket.OPEN) {
-        socket.send('hi there');
-        console.log('Sent: hi there');
-      } else {
-        console.warn('WebSocket not connected yet');
-      }
   });
     
   </script>
 </body>
 
 </html>
+
 
 
 
