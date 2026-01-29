@@ -23,7 +23,7 @@
       navigator.serviceWorker.register("sw.js");
     }
 
-    const socket = new WebSocket('ws://localhost:5618');
+    const socket = new WebSocket('ws://172.16.19.109:5618');
   
     socket.onopen = () => {
       console.log('WebSocket connected');
@@ -57,4 +57,5 @@
 </body>
 
 </html>
+
 
