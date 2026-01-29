@@ -1,12 +1,14 @@
 ﻿const CACHE_NAME = "pwa-cache-v1";
-const FILES = [
+const ASSETS_TO_CACHE = [
   "./",
-  "./index.html"
+  "./index.html",
+  '/manifest.json',
+  '/sw.js'
 ];
 
 self.addEventListener("install", event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(FILES))
+    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS_TO_CACHE))
   );
 });
 
@@ -16,4 +18,5 @@ self.addEventListener("fetch", event => {
       response => response || fetch(event.request)
     )
   );
+
 });
