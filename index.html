@@ -24,9 +24,6 @@
   <div id="log"></div>
 
   <script>
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("sw.js");
-    }
 
     let socket = null;
     const logDiv = document.getElementById('log');
@@ -35,6 +32,14 @@
       logDiv.textContent += message + '\n';
       logDiv.scrollTop = logDiv.scrollHeight;
     }
+
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("sw.js")
+        .then(reg => log('SW registered', reg))
+        .catch(err => error('SW registration failed', err));
+    }
+
+
     
     document.getElementById('connectBtn').addEventListener('click', () => {
     const ip = document.getElementById('ipInput').value.trim();
@@ -80,6 +85,7 @@
 </body>
 
 </html>
+
 
 
 
